@@ -1,265 +1,136 @@
 # AHON FloodWatch
 
-**Barangay Tonsuya, Malabon**
-
-A comprehensive flood detection and monitoring system with AI-powered predictions, real-time alerts, and SMS notifications.
-
-## 🚀 Quick Start
-
-### Option 1: Docker Deployment (Recommended)
-
-```powershell
-# Install Docker Desktop first, then run:
-.\scripts\deploy_docker.ps1
-```
-
-### Option 2: Local Development
-
-```powershell
-# Backend
-.\scripts\deploy_backend.ps1
-
-# Frontend
-.\scripts\deploy_frontend.ps1
-
-# AI Model
-.\scripts\deploy_ai_model.ps1
-```
-
-## 📋 System Overview
-
-### Components
-
-- **Backend**: Django REST API with PostgreSQL database
-- **Frontend**: React web dashboard with Material UI
-- **Hardware**: Arduino sensor/indicators on USB serial + SIM900/SIM800 on Arduino SoftwareSerial
-- **Cloud**: Firebase Realtime Database for real-time sync
-- **AI**: Scikit-learn based flood prediction models
-- **SMS**: Bridge-dispatched Warning/Danger alerts to active, SMS-enabled residents
-
-### Features
-
-- Real-time water level monitoring
-- AI-powered flood prediction
-- Automated SMS alerts to residents
-- Interactive web dashboard
-- Comprehensive reporting system
-- Activity logging and audit trail
-- Role-based access control
-
-## 📁 Project Structure
-
-```
-ai-flood-detection-system/
-├── backend/
-│   ├── Django/          # Django REST API
-│   ├── api/             # Firebase and SMS services
-│   └── ai/              # AI prediction models
-├── frontend/
-│   └── React/           # React web dashboard
-├── hardware/
-│   ├── Arduino/         # Arduino firmware
-│   └── SIM800L/         # GSM modem references
-├── database/           # Database schema and documentation
-├── docs/              # Comprehensive documentation
-├── docker/            # Docker configuration
-└── scripts/           # Deployment scripts
-```
-
-## 🔧 Installation
-
-### Prerequisites
-
-- Python 3.9+
-- Node.js 16+
-- PostgreSQL 13+ (or use Docker)
-- Docker & Docker Compose (optional)
-- Git
-
-### Detailed Setup
-
-See [Quick Start Guide](docs/QUICK_START_GUIDE.md) for detailed installation instructions.
-
-## 📖 Documentation
-
-- **[Quick Start Guide](docs/QUICK_START_GUIDE.md)** - Get started quickly
-- **[API Documentation](docs/API_DOCUMENTATION.md)** - Complete API reference
-- **[User Manual](docs/USER_MANUAL.md)** - End-user guide
-- **[Developer Guide](docs/DEVELOPER_GUIDE.md)** - Development setup
-- **[Hardware Setup](docs/HARDWARE_SETUP.md)** - Hardware installation
-- **[Deployment Guide](docs/DEPLOYMENT_GUIDE.md)** - Production deployment
-- **[Security Guide](docs/SECURITY_GUIDE.md)** - Security best practices
-- **[System Architecture](docs/SYSTEM_ARCHITECTURE.md)** - Architecture overview
-- **[Database Schema](database/DATABASE_SCHEMA.md)** - Database design
-- **[Colab Water-Level Forecast](docs/AHON_FloodWatch_Colab_Forecasting.ipynb)** - Historical visualization and regression forecast
-- **[ISO/IEC 25010:2023 Evaluation Plan](docs/ISO_25010_2023_EVALUATION.md)** - Project quality test matrix
-
-## 🔐 Security
-
-- JWT authentication with role-based access control
-- Encrypted data at rest and in transit
-- Rate limiting and input validation
-- SQL injection and XSS prevention
-- Comprehensive audit logging
-
-## 🧪 Testing
-
-```bash
-# Backend tests
-cd backend/Django
-python manage.py test
-
-# Frontend tests
-cd frontend/React
-npm test
-
-# AI model test
-cd backend/ai
-python flood_prediction.py
-```
-
-## 🚢 Deployment
-
-### Docker Deployment
-
-```bash
-cd docker
-docker-compose up -d --build
-```
-
-### Manual Deployment
-
-See [Deployment Guide](docs/DEPLOYMENT_GUIDE.md) for detailed manual deployment instructions.
-
-## 📊 Dashboard Access
-
-After deployment:
-
-- **Frontend**: http://localhost (or your domain)
-- **Backend API**: http://localhost:8000/api
-- **API Documentation**: http://localhost:8000/swagger/
-- **Django Admin**: http://localhost:8000/admin
-
-## 🔑 Default Credentials
-
-After first deployment, create a superuser:
-
-```bash
-cd backend/Django
-python manage.py createsuperuser
-```
-
-## 📱 Hardware Setup
-
-1. Install Arduino IDE
-2. Open `hardware/Arduino/flood_detection/flood_detection.ino`
-3. Set the sensor calibration and upload the sensor, indicator, and GSM-passthrough firmware
-4. Connect SIM900 TX to Arduino D7 and SIM900 RX to D8; connect sensor signal to A0 and wire sensor power/ground to its rated supply and common GND
-5. Set `FLOODWATCH_USER` and `FLOODWATCH_PASSWORD` to an admin-role Django account, then run `python scripts/serial_bridge.py --port COM8`
-6. Install hardware following [Hardware Setup Guide](docs/HARDWARE_SETUP.md)
-
-The bridge fetches phone numbers for active, SMS-enabled residents from the
-database and sends one SMS to at most three eligible residents when the sensor
-enters Warning or Danger. It sends again only when the reading rises to a
-higher alert level or recovers and later re-enters an alert. Admins can also queue an editable
-official advisory from the Water Level page. Automatic and manual alerts
-record modem-accepted sends or failures in SMS Logs. The SIM900/SIM800 must be
-wired to the Arduino and powered from a suitable supply; `--simulate` never
-sends SMS.
-
-## 🔧 Configuration
-
-### Environment Variables
-
-See `.env.example` files in:
-- `backend/Django/.env.example`
-- `frontend/React/.env.example`
-- `docker/.env.example`
-
-### Required Configuration
-
-- Django SECRET_KEY
-- Database credentials
-- Firebase project credentials
-- SMS gateway API key (if using SMS)
-
-## 🤖 AI Model Training
-
-```powershell
-.\scripts\deploy_ai_model.ps1
-```
-
-This will:
-- Train the flood prediction model
-- Save the model to `backend/ai/models/`
-- Test the model with sample data
-
-## 📈 Monitoring
-
-### System Status
-
-- Check dashboard for real-time status
-- Monitor water levels and alerts
-- Review SMS delivery logs
-- View system performance metrics
-
-### Logs
-
-- Backend: `backend/Django/logs/django.log`
-- Frontend: Browser console
-- Hardware: Arduino Serial Monitor
-
-## 🛠️ Troubleshooting
-
-### Common Issues
-
-1. **Django won't start**: Check database connection in .env
-2. **Frontend won't build**: Clear node_modules and reinstall
-3. **Docker issues**: Ensure Docker Desktop is running
-4. **Hardware not connecting**: Check firmware configuration
-
-For detailed troubleshooting, see the relevant documentation.
-
-## 📞 Support
-
-For issues or questions:
-- Check documentation in `docs/` directory
-- Review deployment scripts in `scripts/` directory
-- Check logs for error messages
-- Contact technical support
-
-## 📝 License
-
-This project is for educational and community use.
-
-## 🎯 Version
-
-**Current Version**: 1.0.0
-**Release Date**: July 13, 2026
-**Status**: Production Ready
-
-## 🙏 Acknowledgments
-
-- Barangay Tonsuya, Malabon
-- Django REST Framework
-- React and Material UI
-- Firebase
-- Arduino and SIM800L communities
-- Scikit-learn team
-
-## 🔄 Changelog
-
-### Version 1.0.0 (2026-07-13)
-
-- Initial release
-- Complete Django REST API
-- React web dashboard
-- Arduino firmware
-- AI prediction module
-- SMS notification system
-- Comprehensive documentation
-- Docker deployment support
+AHON FloodWatch is a flood monitoring and early-warning system for Barangay Tonsuya, Malabon. It combines water-level sensor readings, an AI-assisted forecast, a web dashboard, and configurable SMS alerts to help residents and barangay staff monitor flood conditions and respond to rising water levels.
 
 ---
 
-**Built with ❤️ for Barangay Tonsuya - AHON FloodWatch**
+## Group Members & Roles
+
+* **Padillo, Jenny Rose O.** – Project Manager / Team Leader
+* **Almario, Trisha Nicole V.** – Documentation
+* **Vargas Jr., Victorino** – Debugging and Testing
+* **Jimenez, Don Chester A.** – UI/UX Developer
+
+---
+
+## Tech Stack
+
+* **Frontend:** React, Vite, Material UI
+* **Backend:** Python, Django, Django REST Framework
+* **Database:** PostgreSQL (Docker); Firebase Realtime Database integration
+* **AI:** Python, scikit-learn
+* **Hardware and alerts:** Arduino water-level sensor, SIM900/SIM800 GSM modem
+* **Tools:** Docker Compose, Git, VS Code, Arduino IDE
+
+---
+
+## System Requirements & Prerequisites
+
+For the recommended Docker setup, install:
+
+* Git
+* Docker Desktop with Docker Compose
+
+For local development without Docker, you will also need:
+
+* Python 3.9 or later
+* Node.js 18 or later and npm
+* PostgreSQL 13 or later
+
+Arduino IDE and compatible sensor/GSM hardware are only required for hardware-based readings and SMS alerts. Firebase and SMS credentials are needed to enable their corresponding integrations.
+
+---
+
+## Installation & Setup
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/teakaiii/AhonFloodWatch-GROUP1-BYAHENGAPAT.git
+cd AhonFloodWatch-GROUP1-BYAHENGAPAT
+```
+
+### 2. Configure environment files
+
+In the repository root, copy the example files:
+
+```powershell
+Copy-Item docker\.env.example docker\.env
+Copy-Item backend\Django\.env.example backend\Django\.env
+```
+
+Edit both files before starting the services:
+
+* In `docker/.env`, set a strong `DB_PASSWORD` and a private Django `SECRET_KEY`. Configure Firebase, SMS, and AI values if you plan to use those integrations.
+* In `backend/Django/.env`, set `DB_HOST=postgres` and make `DB_NAME`, `DB_USER`, and `DB_PASSWORD` match the values in `docker/.env`. Set a private `SECRET_KEY` and the appropriate `ALLOWED_HOSTS`.
+* Keep environment files and service-account credentials private; do not commit them.
+
+The example environment files contain placeholders and should be configured before production use.
+
+### 3. Build and start the application
+
+From the repository root, run:
+
+```powershell
+Set-Location docker
+docker-compose up -d --build
+docker-compose exec backend python manage.py migrate
+docker-compose exec backend python manage.py createsuperuser
+```
+
+The PostgreSQL container creates the configured database automatically, and Django migrations create its tables. No separate SQL dump is required. The database design is documented in [database/DATABASE_SCHEMA.md](database/DATABASE_SCHEMA.md).
+
+### 4. Open the application
+
+* **Dashboard:** http://localhost
+* **Backend API:** http://localhost:8000/api
+* **API documentation:** http://localhost:8000/swagger/
+* **Django admin:** http://localhost:8000/admin
+
+To stop the services, run `docker-compose down` from the `docker` directory. To remove database data as well, use `docker-compose down -v`; this permanently deletes the database volume.
+
+---
+
+## Local Development
+
+Detailed instructions for running the Django backend, React frontend, and AI module separately are available in the [Quick Start Guide](docs/QUICK_START_GUIDE.md) and [Developer Guide](docs/DEVELOPER_GUIDE.md). Backend dependencies are listed in `backend/Django/requirements.txt`; frontend dependencies and commands are in `frontend/React/package.json`.
+
+Useful checks:
+
+```powershell
+# Backend tests
+Set-Location backend\Django
+python manage.py test
+
+# Frontend production build
+Set-Location ..\..\frontend\React
+npm install
+npm run build
+```
+
+---
+
+## Documentation
+
+* [Quick Start Guide](docs/QUICK_START_GUIDE.md)
+* [Developer Guide](docs/DEVELOPER_GUIDE.md)
+* [User Manual](docs/USER_MANUAL.md)
+* [API Documentation](docs/API_DOCUMENTATION.md)
+* [Hardware Setup](docs/HARDWARE_SETUP.md)
+* [Deployment Guide](docs/DEPLOYMENT_GUIDE.md)
+* [Security Guide](docs/SECURITY_GUIDE.md)
+* [System Architecture](docs/SYSTEM_ARCHITECTURE.md)
+* [Database Schema](database/DATABASE_SCHEMA.md)
+* [ISO/IEC 25010:2023 Evaluation Plan](docs/ISO_25010_2023_EVALUATION.md)
+
+---
+
+## Default Login Credentials
+
+There are no shared default credentials. Create an administrator during setup with `python manage.py createsuperuser`, then sign in at http://localhost:8000/admin.
+
+---
+
+## License
+
+This project is intended for educational and community use.
