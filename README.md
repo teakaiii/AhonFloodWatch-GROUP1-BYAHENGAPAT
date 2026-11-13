@@ -93,20 +93,58 @@ To stop the services, run `docker-compose down` from the `docker` directory. To 
 
 ## Local Development
 
-Detailed instructions for running the Django backend, React frontend, and AI module separately are available in the [Quick Start Guide](docs/QUICK_START_GUIDE.md) and [Developer Guide](docs/DEVELOPER_GUIDE.md). Backend dependencies are listed in `backend/Django/requirements.txt`; frontend dependencies and commands are in `frontend/React/package.json`.
+The following commands are for **Windows PowerShell**. Open a separate PowerShell terminal for each service, and run them from the repository root unless a command changes directory. Local Django development uses SQLite by default; Docker deployment uses PostgreSQL.
 
-Useful checks:
+### 1. Prepare the backend environment (once)
 
 ```powershell
-# Backend tests
-Set-Location backend\Django
-python manage.py test
-
-# Frontend production build
-Set-Location ..\..\frontend\React
-npm install
-npm run build
+cd "C:\Users\Admin\Desktop\AHON-FloodWatch-3\backend\Django"
+python -m venv venv
+.\venv\Scripts\python.exe -m pip install -r requirements.txt
+.\venv\Scripts\python.exe manage.py migrate
 ```
+
+### 2. Start the Django backend
+
+In the first PowerShell terminal:
+
+```powershell
+cd "C:\Users\Admin\Desktop\AHON-FloodWatch-3\backend\Django"
+.\venv\Scripts\python.exe manage.py runserver 8000
+```
+
+### 3. Start the React frontend
+
+In a second PowerShell terminal:
+
+```powershell
+cd "C:\Users\Admin\Desktop\AHON-FloodWatch-3\frontend\React"
+npm.cmd install
+npm.cmd run dev
+```
+
+Open the Vite URL printed in the terminal (normally http://localhost:5173).
+
+### 4. Optional: start the Arduino serial bridge
+
+Connect and configure the Arduino, then run this in a third PowerShell terminal. Set credentials for a Django account that is authorized to submit readings; enter your own password rather than putting it in a command or this public README.
+
+```powershell
+cd "C:\Users\Admin\Desktop\AHON-FloodWatch-3"
+$env:FLOODWATCH_USER = "your-django-username"
+$env:FLOODWATCH_PASSWORD = Read-Host "Django account password"
+.\.venv\Scripts\python.exe .\scripts\serial_bridge.py --port COM8 --gsm-status connected
+```
+
+The bridge requires `pyserial` and `requests` in the root `.venv`. If they are not installed, install them with:
+
+```powershell
+.\.venv\Scripts\python.exe -m pip install pyserial requests
+```
+
+For hardware-free testing, omit `--port COM8` and use `--simulate`; simulation does not send SMS. See the [Hardware Setup Guide](docs/HARDWARE_SETUP.md) for wiring and sensor configuration.
+
+Backend dependencies are listed in `backend/Django/requirements.txt`; frontend commands and dependencies are in `frontend/React/package.json`. More setup details are available in the [Quick Start Guide](docs/QUICK_START_GUIDE.md) and [Developer Guide](docs/DEVELOPER_GUIDE.md).
 
 ---
 
